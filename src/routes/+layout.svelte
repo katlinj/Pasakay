@@ -18,6 +18,7 @@
         left: 0px;
         width: 100%;
         height: 15%;
-        z-index: 999;
+        z-index: 100;
+        pointer-events: none; 
     }
 </style>

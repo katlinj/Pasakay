@@ -1,6 +1,13 @@
 <script>
+    import HourlyAvg from '$lib/components/HourlyAvg.svelte';
+
 	let { name, address, count, weather } = $props();
     let category = $state('Low');
+    let showPopup = $state(false);
+
+    function openPopup() {
+        showPopup = true;
+    }
 
     if (parseInt(count, 10) > 15) {
         category = 'High';
@@ -13,54 +20,75 @@
     }
 </script>
 
-<div class="jeepStop {category}">
+<button onclick={openPopup}>
+    <div class="jeepStop {category}">
 
-    <div class="identifier">
+        <div class="identifier">
 
-        <img src="{name}.png" alt="{name}" width="100%" class="stopImg">
-        <div class="name"> {name} </div>
+            <img src="{name}.png" alt="{name}" width="100%" class="stopImg">
+            <div class="name"> {name} </div>
 
-    </div>
-
-    <div class="details">
-
-        <div class="address">
-            <img src="location.svg" alt="Address"/>
-            <div class="addresstext">{address}</div>
         </div>
 
-        <div class="density">
-            <div class="count">
-                <div class="number"> {count} </div>
-                {#if parseInt(count, 10) == 1}
-                    Person
-                {:else}
-                    People
-                {/if}
+        <div class="details">
+
+            <div class="address">
+                <img src="location.svg" alt="Address"/>
+                <div class="addresstext">{address}</div>
             </div>
 
-            <div class="categoryText">
-                (<div class="category {category}">{category}</div>)
-            </div>
-        </div>
+            <div class="density">
+                <div class="count">
+                    <div class="number"> {count} </div>
+                    {#if parseInt(count, 10) == 1}
+                        Person
+                    {:else}
+                        People
+                    {/if}
+                </div>
 
-        <div class="weather">
-            {weather}
+                <div class="categoryText">
+                    (<div class="category {category}">{category}</div>)
+                </div>
+            </div>
+
+            <div class="weather">
+                {weather}
+            </div>
+
         </div>
 
     </div>
+</button>
 
-</div>
+<!-- Hourly Average Popup -->
+ {#if showPopup}
+    <HourlyAvg 
+        close={() => showPopup = false}
+        name={name}
+        address={address}
+        count={count}
+        weather={weather}
+        category={category}
+    />
+ {/if}
 
 <style>
     .jeepStop {
         background-color: #1A2337;
+        color: #B2C6CF;
         display:flex;
         border: solid 3px;
         border-radius: 11px;
         width:20em;
         gap:1em;
         padding:1em;
+        cursor: pointer;
+    }
+
+    button {
+        all:unset;
+        cursor:pointer;
     }
 
     /* left side, image + name */
@@ -84,16 +112,13 @@
         justify-content: right;
         width:60%;
         align-items: center;
-        justify-content:space-around;
+        justify-content:space-between;
         
     }
 
     .address {
         display: flex;
         gap:0.3em;
-    }
-
-    .addresstext {
         font-size: 0.6em;
     }
 
