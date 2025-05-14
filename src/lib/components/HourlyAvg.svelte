@@ -1,8 +1,17 @@
 <script>
+	import BarChart from "./BarChart.svelte";
+    import { fade, fly } from 'svelte/transition';
+
+
     let { close, name, address, count, weather, category} = $props();
+
+    const hours = ['5am','6am','7am','8am','9am','10am','11am','12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm', '8pm'];
+    // counts should be updated to reflect averages per hour
+    let counts = [0,0,0,0,0,0,0,0,0,0,1,12,17,1,0,0];
+
 </script>
 
-<div class="hourlyAvg {category}">
+<div class="hourlyAvg {category}" in:fly={{ y: 100, duration: 300 }} out:fly={{ y: 100, duration: 300}}>
 
     <div class="popupHeader">
 
@@ -50,11 +59,16 @@
         Hourly Average
     </div>
 
-    <div class="graph"></div>
+    <div class="graph">
+        <BarChart
+            labels={hours}
+            data={counts}
+        />  
+    </div>
 
 </div>
 
-<button class="backdrop" onclick={close} aria-label="Close"></button>
+<button class="backdrop" onclick={close} aria-label="Close" in:fade={{duration: 300 }} out:fade={{duration:300}}></button>
 
 
 <style>
@@ -135,8 +149,11 @@
     .graph {
         background:#14141f;
         width:auto;
-        height:10em;
         border-radius: 15px;
+        flex:1;
+        padding:1em;
+        min-height:300px;
+        margin-top:1rem;
     }
 
     .High{
