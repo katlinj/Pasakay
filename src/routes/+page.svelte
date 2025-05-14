@@ -1,45 +1,35 @@
 <script>
     import JeepStop from '$lib/components/JeepStop.svelte';
 
+    import { onMount } from 'svelte';
+    import { db } from '$lib/firebase.js';
+    import { collection, onSnapshot } from 'firebase/firestore';
+
+    let jeepStops = [];
+
+    onMount(() => {
+        const unsubscribe = onSnapshot(collection(db, 'jeepStops'), (snapshot) => {
+        jeepStops = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+        console.log(jeepStops);
+        });
+
+        return () => unsubscribe();
+    });
 </script>
 
 <div class="jeepStopList">
 
-    <!-- just arbitrary examples -->
-    <JeepStop
-        name='Vinzons Hall'
-        address='M33F+P88, Diliman, Quezon City, Metro Manila'
-        count='25'
-        weather='Sunny, 32°C'
-    />
-
-    <JeepStop
-        name='Vinzons Hall'
-        address='M33F+P88, Diliman, Quezon City, Metro Manila'
-        count='10'
-        weather='Sunny, 32°C'
-    />
-
-    <JeepStop
-        name='Vinzons Hall'
-        address='M33F+P88, Diliman, Quezon City, Metro Manila'
-        count='3'
-        weather='Sunny, 32°C'
-    />
-
-    <JeepStop
-        name='Vinzons Hall'
-        address='M33F+P88, Diliman, Quezon City, Metro Manila'
-        count='8'
-        weather='Sunny, 32°C'
-    />
-
-    <JeepStop
-        name='Vinzons Hall'
-        address='M33F+P88, Diliman, Quezon City, Metro Manila'
-        count='17'
-        weather='Sunny, 32°C'
-    />
+    {#each jeepStops as stop}
+        <JeepStop
+            name = {stop.name}
+            address = {stop.address}
+            count = {stop.peopleCount}
+            weather = 'Sunny, 32°C'
+        />
+    {/each}
 
 </div>
 
