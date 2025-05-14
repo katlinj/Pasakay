@@ -2,22 +2,18 @@
     import HourlyAvg from '$lib/components/HourlyAvg.svelte';
 
 	let { name, address, count, weather } = $props();
-    let category = $state('Low');
     let showPopup = $state(false);
 
     function openPopup() {
         showPopup = true;
     }
 
-    if (parseInt(count, 10) > 15) {
-        category = 'High';
-    }
-    else if (parseInt(count, 10) > 5) {
-        category = 'Moderate';
-    }
-    else {
-        category = 'Low';
-    }
+    const category = $derived.by(() => {
+        const c = parseInt(count, 10);
+        if (c > 15) return 'High';
+        else if (c > 5) return 'Moderate';
+        else return 'Low';
+    });
 </script>
 
 <button onclick={openPopup}>
