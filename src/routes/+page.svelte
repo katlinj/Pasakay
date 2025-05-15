@@ -4,16 +4,25 @@
     import { onMount } from 'svelte';
     import { db } from '$lib/firebase.js';
     import { collection, onSnapshot } from 'firebase/firestore';
+    import { params, url, fetchWeatherData } from '$lib/weather.js';
+    import { getWeatherType } from '$lib/weathertype';
 
     let jeepStops = [];
+    let currentWeather = '';
 
+    // Listens to the 'jeepStops' collection and updates each card for every change
     onMount(() => {
         const unsubscribe = onSnapshot(collection(db, 'jeepStops'), (snapshot) => {
-        jeepStops = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }));
-        console.log(jeepStops);
+            jeepStops = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            // Fetch current weather data whenever data is updated
+            fetchWeatherData(params, url).then((data) => {
+                const weatherCode = data.current.weatherCode;
+                const currentTemp = Math.round(data.current.temperature2m);
+                currentWeather = getWeatherType(weatherCode) + ', ' + currentTemp + '°C';
+            });
         });
 
         return () => unsubscribe();
@@ -23,12 +32,14 @@
 <div class="jeepStopList">
 
     {#each jeepStops as stop}
-        <JeepStop
-            name = {stop.name}
-            address = {stop.address}
-            count = {stop.peopleCount}
-            weather = 'Sunny, 32°C'
-        />
+        {#if stop.location == 'Vinzons Hall'}
+            <JeepStop
+                name = {stop.location}
+                address = 'M33F+P88, Diliman, Quezon City, Metro Manila'
+                count = {stop.personCount}
+                weather = {currentWeather}
+            />
+        {/if}
     {/each}
 
 </div>
