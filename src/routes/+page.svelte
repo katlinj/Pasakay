@@ -1,46 +1,29 @@
 <script>
     import JeepStop from '$lib/components/JeepStop.svelte';
-
     import { onMount } from 'svelte';
     import { db } from '$lib/firebase.js';
     import { collection, onSnapshot } from 'firebase/firestore';
     import { params, url, fetchWeatherData } from '$lib/weather.js';
     import { getWeatherType } from '$lib/weathertype';
-
-    let vinzonsHall = {
-        location: 'Vinzons Hall',
-        personCount: 0,
-    };
-
-    let krusNaLigas = {
-        location: 'Krus na Ligas',
-        personCount: 0,
-    };
-
-    let AECH = {
-        location: 'AECH',
-        personCount: 0,
-    };
-
-    let area2 = {
-        location: 'Area 2',
-        personCount: 0,
-    };
+    import { getLocationData, computeHourlyAverages } from '$lib/helpers';
+    import { vinzonsHall, krusNaLigas, AECH, area2 } from '$lib/stopnames';
 
     let currentWeather = null;
+    let vinzonsHourlyAvg = [];
 
-	onMount(() => {
-		const unsubscribe = onSnapshot(collection(db, 'jeepStops'), (snapshot) => {
+    onMount(() => {
+        const unsubscribe = onSnapshot(collection(db, 'jeepStops'), (snapshot) => {
+        // Vinzons Hall
             // Most recent document for Vinzons Hall
-			const vinzonsData = snapshot.docs
-				.map(doc => ({ id: doc.id, ...doc.data() }))
-				.filter(doc => doc.location === 'Vinzons Hall')
-				.sort((a, b) => b.lastUpdated.toMillis() - a.lastUpdated.toMillis());
+            const vinzonsData = getLocationData(snapshot, 'Vinzons Hall');
 
-			if (vinzonsData.length > 0) {
-                vinzonsHall = vinzonsData[0];
-			}
+            if (vinzonsData.length > 0) {
+                vinzonsHall.set(vinzonsData[0]);
+            }
 
+            // Average per hour for Vinzons Hall
+            vinzonsHourlyAvg = computeHourlyAverages(vinzonsData);
+        
             // Fetch current weather data whenever data is updated
             fetchWeatherData(params, url).then((data) => {
                 const weatherCode = data.current.weatherCode;
@@ -57,33 +40,33 @@
 
     <!-- Vinzons Hall -->
     <JeepStop
-        name = {vinzonsHall.location}
-        address = 'M33F+P88, Diliman, Quezon City, Metro Manila'
-        count = {vinzonsHall.personCount}
+        name = {$vinzonsHall.location}
+        address = 'M33F+P88, UP Diliman, Quezon City, Metro Manila'
+        count = {$vinzonsHall.personCount}
         weather = {currentWeather}
     />
 
     <!-- Krus na Ligas -->
     <JeepStop
-        name = {krusNaLigas.location}
+        name = {$krusNaLigas.location}
         address = '56 B. Baluyot, Diliman, Quezon City, Metro Manila'
-        count = {krusNaLigas.personCount}
+        count = {$krusNaLigas.personCount}
         weather = {currentWeather}
     />
 
     <!-- AECH -->
     <JeepStop
-        name = {AECH.location}
-        address = 'J3X9+FFG, P. Velasquez Street, UP Campus Diliman, Quezon City, 1101 Metro Manila'
-        count = {AECH.personCount}
+        name = {$AECH.location}
+        address = 'J3X9+FFG, P. Velasquez Street, UP Diliman, Quezon City, Metro Manila'
+        count = {$AECH.personCount}
         weather = {currentWeather}
     />
 
     <!-- Area 2 -->
     <JeepStop
-        name = {area2.location}
-        address = 'M359+W97, J.P. Laurel, Diliman, Quezon City, Metro Manila'
-        count = {area2.personCount}
+        name = {$area2.location}
+        address = 'M359+W97, J.P. Laurel, UP Diliman, Quezon City, Metro Manila'
+        count = {$area2.personCount}
         weather = {currentWeather}
     />
 

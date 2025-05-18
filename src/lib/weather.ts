@@ -1,7 +1,5 @@
 import { fetchWeatherApi } from 'openmeteo';
 
-console.log("Fetching weather data...");
-
 export const params = {
 	"latitude": 14.6543,
 	"longitude": 121.0733,
