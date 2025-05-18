@@ -2,7 +2,7 @@
 	import BarChart from "./BarChart.svelte";
     import { fade, fly } from 'svelte/transition';
 
-    let { close, name, address, count, weather, category, avg} = $props();
+    let { close, name, address, count, weather, category, avg, date} = $props();
 
     const hours = ['5am','6am','7am','8am','9am','10am','11am','12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm', '8pm'];
 
@@ -50,6 +50,9 @@
 
     <div class="weather">
         {weather}
+    </div>
+    <div class="lastUpdate">
+        as of {date}
     </div>
 
     <div class="graphTitle">
@@ -133,7 +136,7 @@
         text-decoration: underline;
         display:inline;
     }
-    .weather {
+    .weather, .lastUpdate {
         font-size: 0.6em;
         text-align: center;
     }

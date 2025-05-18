@@ -16,13 +16,11 @@
 
     onMount(() => {
         const unsubscribe = onSnapshot(collection(db, 'jeepStops'), (snapshot) => {
-            // Vinzons Hall
+            // Per Stop
             const vinzonsData = getLocationData(snapshot, 'Vinzons Hall'); // most recent data
             const aechData = getLocationData(snapshot, 'AECH');
             const krusNaLigasData = getLocationData(snapshot, 'Krus na Ligas');
             const area2Data = getLocationData(snapshot, 'Area 2');
-
-            console.log('Vinzons data:', vinzonsData[1].timestamp);
 
             if (vinzonsData.length > 0) vinzonsHall.set(vinzonsData[0]);
             if (krusNaLigasData.length > 0) krusNaLigas.set(krusNaLigassData[0]);
@@ -63,6 +61,7 @@
         count = {$vinzonsHall.personCount}
         weather = {currentWeather}
         avg = {vinzonsHourlyAvg}
+        lastUpdate = {$vinzonsHall.timestamp}
     />
 
     <!-- Krus na Ligas -->
@@ -72,6 +71,7 @@
         count = {$krusNaLigas.personCount}
         weather = {currentWeather}
         avg = {krusNaLigasHourlyAvg}
+        lastUpdate = {$krusNaLigas.timestamp}
     />
 
     <!-- AECH -->
@@ -81,6 +81,7 @@
         count = {$AECH.personCount}
         weather = {currentWeather}
         avg = {aechHourlyAvg}
+        lastUpdate = {$AECH.timestamp}
     />
 
     <!-- Area 2 -->
@@ -90,6 +91,7 @@
         count = {$area2.personCount}
         weather = {currentWeather}
         avg = {area2HourlyAvg}
+        lastUpdate = {$area2.timestamp}
     />
 
 </div>

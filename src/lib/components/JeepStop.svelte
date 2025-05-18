@@ -1,8 +1,24 @@
 <script>
+	// import { _ } from '$env/static/private';
     import HourlyAvg from '$lib/components/HourlyAvg.svelte';
 
-	let { name, address, count, weather, avg } = $props();
+	let { name, address, count, weather, avg, lastUpdate } = $props();
     let showPopup = $state(false);
+
+    //parsing date
+    let [datePart, timePart] = $derived(lastUpdate.split('_'));
+    let [year, month, day] = $derived(datePart.split('-').map(Number));
+    let [hour, minute, second] = $derived(timePart.split('-').map(Number));
+    let date = $derived(new Date(year, month-1, day, hour, minute, second));
+    let formattedDate = $derived(date.toLocaleString([], {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit'}));
+
+    let current = $state(new Date());
+
+    let updated = $derived((current - date) >= 0 && (current - date) <= (7 * 24 * 60 * 60 * 1000)); //within last week
+
+    // function isUpdated() {
+    //     return ((current - date) >= 0 && (current - date) <= (7 * 24 * 60 * 60 * 1000));
+    // }
 
     function openPopup() {
         showPopup = true;
@@ -17,8 +33,8 @@
     
 </script>
 
-<button onclick={openPopup}>
-    <div class="jeepStop {category}">
+<button onclick={openPopup} disabled='{!updated}'>
+    <div class="jeepStop {category} updated-{updated}">
 
         <div class="identifier">
 
@@ -33,25 +49,34 @@
                 <img src="location.svg" alt="Address"/>
                 <div class="addresstext">{address}</div>
             </div>
+            
+            {#if updated}
+                <div class="density">
+                    <div class="count">
+                        <div class="number"> {count} </div>
+                        {#if parseInt(count, 10) == 1}
+                            Person
+                        {:else}
+                            People
+                        {/if}
+                    </div>
 
-            <div class="density">
-                <div class="count">
-                    <div class="number"> {count} </div>
-                    {#if parseInt(count, 10) == 1}
-                        Person
-                    {:else}
-                        People
-                    {/if}
+                    <div class="categoryText">
+                        (<div class="category {category}">{category}</div>)
+                    </div>
                 </div>
 
-                <div class="categoryText">
-                    (<div class="category {category}">{category}</div>)
+                <div class="weather">
+                    {weather}
                 </div>
-            </div>
-
-            <div class="weather">
-                {weather}
-            </div>
+                <div class="lastUpdate">
+                    as of {formattedDate}
+                </div>
+            {:else}
+                <div>
+                    unupdated
+                </div>
+            {/if}
 
         </div>
 
@@ -68,6 +93,7 @@
         weather={weather}
         category={category}
         avg={avg}
+        date={date}
     />
  {/if}
 
@@ -141,9 +167,10 @@
         display:inline;
     }
 
-    .weather {
+    .weather, .lastUpdate {
         font-size: 0.6em;
     }
+
 
     /* conditional border colors */
     .jeepStop.High{
