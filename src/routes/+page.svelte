@@ -13,16 +13,13 @@
 
     onMount(() => {
         const unsubscribe = onSnapshot(collection(db, 'jeepStops'), (snapshot) => {
-        // Vinzons Hall
-            // Most recent document for Vinzons Hall
-            const vinzonsData = getLocationData(snapshot, 'Vinzons Hall');
+            // Vinzons Hall
+            const vinzonsData = getLocationData(snapshot, 'Vinzons Hall'); // most recent data
 
-            if (vinzonsData.length > 0) {
-                vinzonsHall.set(vinzonsData[0]);
-            }
+            if (vinzonsData.length > 0) vinzonsHall.set(vinzonsData[0]);
 
-            // Average per hour for Vinzons Hall
-            vinzonsHourlyAvg = computeHourlyAverages(vinzonsData);
+            vinzonsHourlyAvg = computeHourlyAverages(vinzonsData); // hourly average data
+            console.log('Vinzons Hall:', vinzonsHourlyAvg);
         
             // Fetch current weather data whenever data is updated
             fetchWeatherData(params, url).then((data) => {
@@ -44,6 +41,7 @@
         address = 'M33F+P88, UP Diliman, Quezon City, Metro Manila'
         count = {$vinzonsHall.personCount}
         weather = {currentWeather}
+        avg = {vinzonsHourlyAvg}
     />
 
     <!-- Krus na Ligas -->
@@ -52,6 +50,7 @@
         address = '56 B. Baluyot, Diliman, Quezon City, Metro Manila'
         count = {$krusNaLigas.personCount}
         weather = {currentWeather}
+        avg = {vinzonsHourlyAvg}
     />
 
     <!-- AECH -->
@@ -60,6 +59,7 @@
         address = 'J3X9+FFG, P. Velasquez Street, UP Diliman, Quezon City, Metro Manila'
         count = {$AECH.personCount}
         weather = {currentWeather}
+        avg = {vinzonsHourlyAvg}
     />
 
     <!-- Area 2 -->
@@ -68,6 +68,7 @@
         address = 'M359+W97, J.P. Laurel, UP Diliman, Quezon City, Metro Manila'
         count = {$area2.personCount}
         weather = {currentWeather}
+        avg = {vinzonsHourlyAvg}
     />
 
 </div>

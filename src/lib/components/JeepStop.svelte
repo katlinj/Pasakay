@@ -1,7 +1,7 @@
 <script>
     import HourlyAvg from '$lib/components/HourlyAvg.svelte';
 
-	let { name, address, count, weather } = $props();
+	let { name, address, count, weather, avg } = $props();
     let showPopup = $state(false);
 
     function openPopup() {
@@ -14,6 +14,7 @@
         else if (c > 5) return 'Moderate';
         else return 'Low';
     });
+    
 </script>
 
 <button onclick={openPopup}>
@@ -66,6 +67,7 @@
         count={count}
         weather={weather}
         category={category}
+        avg={avg}
     />
  {/if}
 

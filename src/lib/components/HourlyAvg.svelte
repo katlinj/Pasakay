@@ -2,12 +2,9 @@
 	import BarChart from "./BarChart.svelte";
     import { fade, fly } from 'svelte/transition';
 
-
-    let { close, name, address, count, weather, category} = $props();
+    let { close, name, address, count, weather, category, avg} = $props();
 
     const hours = ['5am','6am','7am','8am','9am','10am','11am','12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm', '8pm'];
-    // counts should be updated to reflect averages per hour
-    let counts = [0,0,0,0,0,0,0,0,0,0,1,12,17,1,0,0];
 
 </script>
 
@@ -62,7 +59,7 @@
     <div class="graph">
         <BarChart
             labels={hours}
-            data={counts}
+            data={avg}
         />  
     </div>
 

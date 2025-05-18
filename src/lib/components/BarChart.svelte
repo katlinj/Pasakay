@@ -81,6 +81,8 @@
         if (chart) {
             chart.data.labels = labels;
             chart.data.datasets[0].data = data;
+            chart.data.datasets[0].backgroundColor = barColors;
+            chart.data.datasets[0].hoverBackgroundColor = barColors;
             chart.update();
         }
     });
