@@ -12,6 +12,8 @@
         return '#36af36'
     }));
 
+    let maxAvg = $derived(Math.max(...data));
+
     let canvas;
     let chart;
 
@@ -45,6 +47,7 @@
                 },
                 scales: {
                     y:{
+                        max: (maxAvg <= 15 ? 15 : undefined),
                         beginAtZero:true,
                         ticks: {
                             stepSize:5,
