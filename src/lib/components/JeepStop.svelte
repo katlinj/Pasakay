@@ -13,7 +13,7 @@
 
     let current = $state(new Date());
 
-    let updated = $derived((current.getTime() - date.getTime()) <= (7 * 24 * 60 * 60 * 1000)); //within last week
+    let updated = $derived((current.getTime() - date.getTime()) <= (60 * 60 * 1000)); //within last hour
 
 
     function openPopup() {
@@ -168,7 +168,6 @@
     .count .number {
         text-decoration: underline;
         display:inline;
-        
     }
 
     .bottomtext {
