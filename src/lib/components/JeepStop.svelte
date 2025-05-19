@@ -1,7 +1,7 @@
 <script>
     import HourlyAvg from '$lib/components/HourlyAvg.svelte';
 
-	let { name, address, count, weather, avg, lastUpdate } = $props();
+	let { name, address, count, weather, avg, labels, lastUpdate } = $props();
     let showPopup = $state(false);
 
     //parsing date
@@ -14,7 +14,6 @@
     let current = $state(new Date());
 
     let updated = $derived((current.getTime() - date.getTime()) <= (60 * 60 * 1000)); //within last hour
-
 
     function openPopup() {
         showPopup = true;
@@ -94,6 +93,7 @@
         weather={weather}
         category={category}
         avg={avg}
+        labels={labels}
         date={date}
     />
  {/if}

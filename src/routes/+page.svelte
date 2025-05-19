@@ -5,14 +5,14 @@
     import { collection, onSnapshot } from 'firebase/firestore';
     import { params, url, fetchWeatherData } from '$lib/weather.js';
     import { getWeatherType } from '$lib/weathertype';
-    import { getLocationData, computeHourlyAverages } from '$lib/helpers';
+    import { getLocationData, computeHourlyAverages, computeQuarterlyAverages } from '$lib/helpers';
     import { vinzonsHall, krusNaLigas, AECH, area2 } from '$lib/stopnames';
 
     let currentWeather = null;
-    let vinzonsHourlyAvg = [];
-    let aechHourlyAvg = [];
-    let krusNaLigasHourlyAvg = [];
-    let area2HourlyAvg = [];
+    let vinzonsQuarterlyAvg = [];
+    let aechQuarterlyAvg = [];
+    let krusNaLigasQuarterlyAvg = [];
+    let area2QuarterlyAvg = [];
 
     onMount(() => {
         const unsubscribe = onSnapshot(collection(db, 'jeepStops'), (snapshot) => {
@@ -23,21 +23,21 @@
             const area2Data = getLocationData(snapshot, 'Area 2');
 
             if (vinzonsData.length > 0) vinzonsHall.set(vinzonsData[0]);
-            if (krusNaLigasData.length > 0) krusNaLigas.set(krusNaLigassData[0]);
+            if (krusNaLigasData.length > 0) krusNaLigas.set(krusNaLigasData[0]);
             if (aechData.length > 0) AECH.set(aechData[0]);
             if (area2Data.length > 0) area2.set(area2Data[0]);
 
-            aechHourlyAvg = computeHourlyAverages(aechData); // hourly average data
-            console.log('AECH:', aechHourlyAvg);
+            aechQuarterlyAvg = computeQuarterlyAverages(aechData); // quarterly average data
+            console.log('AECH:', aechQuarterlyAvg);
 
-            vinzonsHourlyAvg = computeHourlyAverages(vinzonsData);
-            console.log('Vinzons Hall:', vinzonsHourlyAvg);
+            vinzonsQuarterlyAvg = computeQuarterlyAverages(vinzonsData);
+            console.log('Vinzons Hall:', vinzonsQuarterlyAvg);
 
-            krusNaLigasHourlyAvg = computeHourlyAverages(krusNaLigasData);
-            console.log('Krus na Ligas:', krusNaLigasHourlyAvg);
+            krusNaLigasQuarterlyAvg = computeQuarterlyAverages(krusNaLigasData);
+            console.log('Krus na Ligas:', krusNaLigasQuarterlyAvg);
 
-            area2HourlyAvg = computeHourlyAverages(area2Data);
-            console.log('Area 2:', area2HourlyAvg);
+            area2QuarterlyAvg = computeQuarterlyAverages(area2Data);
+            console.log('Area 2:', area2QuarterlyAvg);
         
             // Fetch current weather data whenever data is updated
             fetchWeatherData(params, url).then((data) => {
@@ -45,7 +45,6 @@
                 const currentTemp = Math.round(data.current.temperature2m);
                 currentWeather = getWeatherType(weatherCode) + ', ' + currentTemp + '°C';
             });
-
 		});
 
 		return () => unsubscribe();
@@ -60,7 +59,8 @@
         address = 'M33F+P88, UP Diliman, Quezon City, Metro Manila'
         count = {$vinzonsHall.personCount}
         weather = {currentWeather}
-        avg = {vinzonsHourlyAvg}
+        avg = {vinzonsQuarterlyAvg.quarterlyAvg}
+        labels = {vinzonsQuarterlyAvg.columnLabels}
         lastUpdate = {$vinzonsHall.timestamp}
     />
 
@@ -70,7 +70,8 @@
         address = '56 B. Baluyot, Diliman, Quezon City, Metro Manila'
         count = {$krusNaLigas.personCount}
         weather = {currentWeather}
-        avg = {krusNaLigasHourlyAvg}
+        avg = {krusNaLigasQuarterlyAvg.quarterlyAvg}
+        labels = {krusNaLigasQuarterlyAvg.columnLabels}
         lastUpdate = {$krusNaLigas.timestamp}
     />
 
@@ -80,7 +81,8 @@
         address = 'J3X9+FFG, P. Velasquez Street, UP Diliman, Quezon City, Metro Manila'
         count = {$AECH.personCount}
         weather = {currentWeather}
-        avg = {aechHourlyAvg}
+        avg = {aechQuarterlyAvg.quarterlyAvg}
+        labels = {aechQuarterlyAvg.columnLabels}
         lastUpdate = {$AECH.timestamp}
     />
 
@@ -90,7 +92,8 @@
         address = 'M359+W97, J.P. Laurel, UP Diliman, Quezon City, Metro Manila'
         count = {$area2.personCount}
         weather = {currentWeather}
-        avg = {area2HourlyAvg}
+        avg = {area2QuarterlyAvg.quarterlyAvg}
+        labels = {area2QuarterlyAvg.columnLabels}
         lastUpdate = {$area2.timestamp}
     />
 

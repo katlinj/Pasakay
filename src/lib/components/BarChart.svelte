@@ -66,7 +66,7 @@
                             maxRotation:0,
                             minRotation:0,
                             color: '#B2C6CF',
-                            callback: (value, index) => index == 0 || index == 7 || index == 15 ? labels[index] : '',
+                            callback: (value, index) => index == 0 || index == 19 || index == 35 ? labels[index] : '',
                             autoSkip:false
                         },
                         grid: {
