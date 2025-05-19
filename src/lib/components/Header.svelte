@@ -18,6 +18,7 @@
     }
     .logoIcon {
         height: 3em;
+        margin-top: 1em;
     }
     .logoText {
         height: 1.5em;

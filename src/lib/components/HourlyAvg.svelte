@@ -6,13 +6,18 @@
 
     const hours = ['5am','6am','7am','8am','9am','10am','11am','12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm', '8pm'];
 
+    let formattedDate = $derived(date.toLocaleString([], {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit'}));
+
+    let current = $state(new Date());
+    let updated = $derived((current.getTime() - date.getTime()) <= (7 * 24 * 60 * 60 * 1000)); //within last week
+
 </script>
 
-<div class="hourlyAvg {category}" in:fly={{ y: 100, duration: 300 }} out:fly={{ y: 100, duration: 300}}>
+<div class="hourlyAvg {category} updated-{updated}" in:fly={{ y: 100, duration: 300 }} out:fly={{ y: 100, duration: 300}}>
 
     <div class="popupHeader">
 
-        <div class="title">
+        <div class="headerText">
 
             <div class="name">
                 {name}
@@ -31,31 +36,46 @@
 
     </div>
     
-    <hr class="divider {category}">
+    <hr class="divider {category} updated-{updated}">
 
-    <div class="density">
-        <div class="count">
-            <div class="number"> {count} </div>
-            {#if parseInt(count, 10) == 1}
-                Person
-            {:else}
-                People
-            {/if}
+    <div class="title">
+        Currently
+    </div>
+
+    {#if updated}
+        <div class="density">
+            <div class="count">
+                <div class="number"> {count} </div>
+                {#if parseInt(count, 10) == 1}
+                    Person
+                {:else}
+                    People
+                {/if}
+            </div>
+
+            <div class="categoryText">
+                (<div class="category {category}">{category}</div>)
+            </div>
         </div>
 
-        <div class="categoryText">
-            (<div class="category {category}">{category}</div>)
+        <div class="bottomtext">
+            <div class="weather">
+                {weather}
+            </div>
+            <div class="lastUpdate">
+                as of {formattedDate}
+            </div>
         </div>
-    </div>
+    {:else}
+        <div class="count unupdated">
+            __ People
+        </div>
+        <div class="bottomtext">
+            Fetching Data...
+        </div>
+    {/if}
 
-    <div class="weather">
-        {weather}
-    </div>
-    <div class="lastUpdate">
-        as of {date}
-    </div>
-
-    <div class="graphTitle">
+    <div class="title">
         Hourly Average
     </div>
 
@@ -123,6 +143,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        margin:0.8em;
     }
     .category{
         align-items: center;
@@ -131,16 +152,21 @@
     .count {
         font-weight: bold;
         font-size:1.2em;
+        text-align: center;
+    }
+    .count.unupdated {
+        margin:0.8em;
     }
     .count .number {
         text-decoration: underline;
         display:inline;
     }
-    .weather, .lastUpdate {
+    .bottomtext {
         font-size: 0.6em;
         text-align: center;
+        font-style: italic;
     }
-    .graphTitle {
+    .title {
         font-weight: bold;
         text-align: center;
         margin-top: 1em;
@@ -164,6 +190,9 @@
     }
     .Low{
         border-color: #216732;
+    }
+    .updated-false{
+        border-color: #56566b;
     }
 
     .category.High{

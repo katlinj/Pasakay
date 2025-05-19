@@ -1,5 +1,4 @@
 <script>
-	// import { _ } from '$env/static/private';
     import HourlyAvg from '$lib/components/HourlyAvg.svelte';
 
 	let { name, address, count, weather, avg, lastUpdate } = $props();
@@ -14,11 +13,8 @@
 
     let current = $state(new Date());
 
-    let updated = $derived((current - date) >= 0 && (current - date) <= (7 * 24 * 60 * 60 * 1000)); //within last week
+    let updated = $derived((current.getTime() - date.getTime()) <= (7 * 24 * 60 * 60 * 1000)); //within last week
 
-    // function isUpdated() {
-    //     return ((current - date) >= 0 && (current - date) <= (7 * 24 * 60 * 60 * 1000));
-    // }
 
     function openPopup() {
         showPopup = true;
@@ -33,7 +29,7 @@
     
 </script>
 
-<button onclick={openPopup} disabled='{!updated}'>
+<button onclick={openPopup}>
     <div class="jeepStop {category} updated-{updated}">
 
         <div class="identifier">
@@ -66,15 +62,20 @@
                     </div>
                 </div>
 
-                <div class="weather">
-                    {weather}
-                </div>
-                <div class="lastUpdate">
-                    as of {formattedDate}
+                <div class="bottomtext">
+                    <div class="weather">
+                        {weather}
+                    </div>
+                    <div class="lastUpdate">
+                        as of {formattedDate}
+                    </div>
                 </div>
             {:else}
-                <div>
-                    unupdated
+                <div class="count">
+                    __ People
+                </div>
+                <div class="bottomtext">
+                    Fetching Data...
                 </div>
             {/if}
 
@@ -107,8 +108,7 @@
         width:20em;
         gap:1em;
         padding:1em;
-        cursor: pointer;
-    }
+    } 
 
     button {
         all:unset;
@@ -117,7 +117,7 @@
 
     /* left side, image + name */
     .identifier {
-        width:40%;
+        width:60%;
         display: flex;
         flex-direction: column;
         gap:0.2em;
@@ -125,31 +125,33 @@
     }
 
     img.stopImg {
-        border: solid #14141F 8px;
+        border: solid #14141F 6px;
         border-radius: 5px;
+        height:4.5em;
     }
 
     /* right side, address + count + weather */
     .details {
         display:flex;
         flex-direction: column;
-        justify-content: right;
         width:60%;
         align-items: center;
         justify-content:space-between;
+        gap:0.3em;
         
     }
 
     .address {
         display: flex;
         gap:0.3em;
-        font-size: 0.6em;
+        font-size: 0.1em;
     }
 
     .density {
         display: flex;
         flex-direction: column;
         align-items: center;
+        gap:0px;
     }
 
     .category{
@@ -160,15 +162,19 @@
     .count {
         font-weight: bold;
         font-size:1.2em;
+        text-align: center;
     }
 
     .count .number {
         text-decoration: underline;
         display:inline;
+        
     }
 
-    .weather, .lastUpdate {
+    .bottomtext {
         font-size: 0.6em;
+        font-style: italic;
+        text-align: center;
     }
 
 
@@ -181,6 +187,9 @@
     }
     .jeepStop.Low{
         border-color: #216732;
+    }
+    .jeepStop.updated-false{
+        border-color: #56566b;
     }
 
     /* conditional category colors */
