@@ -38,10 +38,6 @@
     
     <hr class="divider {category} updated-{updated}">
 
-    <div class="title">
-        Currently
-    </div>
-
     {#if updated}
         <div class="density">
             <div class="count">
@@ -67,8 +63,13 @@
             </div>
         </div>
     {:else}
-        <div class="count unupdated">
-            __ People
+        <div class="density">
+            <div class="count unupdated">
+                No. of People
+            </div>
+            <div class="categoryText">
+                (<div class="category unavailable">unavailable</div>)
+            </div>
         </div>
         <div class="bottomtext">
             Fetching Data...
@@ -76,7 +77,7 @@
     {/if}
 
     <div class="title">
-        Quarterly Average
+        Historical Average
     </div>
 
     <div class="graph">
@@ -154,9 +155,6 @@
         font-size:1.2em;
         text-align: center;
     }
-    .count.unupdated {
-        margin:0.8em;
-    }
     .count .number {
         text-decoration: underline;
         display:inline;
@@ -164,6 +162,8 @@
     .bottomtext {
         font-size: 0.6em;
         text-align: center;
+    }
+    .lastUpdate {
         font-style: italic;
     }
     .title {

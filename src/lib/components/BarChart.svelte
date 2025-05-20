@@ -7,8 +7,8 @@
     let {labels, data} = $props();
 
     let barColors = $derived(data.map(value => {
-        if (value > 15 ) return '#da5a5a';
-        if (value > 5 ) return '#dd9624';
+        if (value >= 10 ) return '#da5a5a';
+        if (value >= 5 ) return '#dd9624';
         return '#36af36'
     }));
 

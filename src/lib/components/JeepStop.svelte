@@ -21,8 +21,8 @@
 
     const category = $derived.by(() => {
         const c = parseInt(count, 10);
-        if (c > 15) return 'High';
-        else if (c > 5) return 'Moderate';
+        if (c >= 10) return 'High';
+        else if (c >= 5) return 'Moderate';
         else return 'Low';
     });
     
@@ -70,8 +70,13 @@
                     </div>
                 </div>
             {:else}
-                <div class="count">
-                    __ People
+                <div class="density">
+                    <div class="count">
+                        No. of People
+                    </div>
+                    <div class="categoryText">
+                        (<div class="unavailable">unavailable</div>)
+                    </div>
                 </div>
                 <div class="bottomtext">
                     Fetching Data...
@@ -144,7 +149,7 @@
     .address {
         display: flex;
         gap:0.3em;
-        font-size: 0.1em;
+        font-size: 0.6em;
     }
 
     .density {
@@ -154,7 +159,7 @@
         gap:0px;
     }
 
-    .category{
+    .category, .unavailable{
         align-items: center;
         display:inline;
     }
@@ -172,8 +177,10 @@
 
     .bottomtext {
         font-size: 0.6em;
-        font-style: italic;
         text-align: center;
+    }
+    .lastUpdate {
+        font-style: italic;
     }
 
 
