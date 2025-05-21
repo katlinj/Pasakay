@@ -72,7 +72,7 @@
             </div>
         </div>
         <div class="bottomtext">
-            Fetching Data...
+            Fetching data...
         </div>
     {/if}
 

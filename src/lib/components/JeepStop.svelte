@@ -78,8 +78,8 @@
                         (<div class="unavailable">unavailable</div>)
                     </div>
                 </div>
-                <div class="bottomtext">
-                    Fetching Data...
+                <div class="fetchingData">
+                    Fetching data...
                 </div>
             {/if}
 
@@ -182,7 +182,11 @@
     .lastUpdate {
         font-style: italic;
     }
-
+    .fetchingData {
+        font-size: 0.6em;
+        text-align: center;
+        font-style: italic;
+    }
 
     /* conditional border colors */
     .jeepStop.High{

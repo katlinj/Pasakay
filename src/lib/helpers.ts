@@ -105,3 +105,29 @@ export function to12HourLabels(columnLabels: string[]): string[] {
     });
 }
 
+export function sortJeepStopList(jeepStopList) {
+    const priorityOrder = [
+        "AECH Conference",
+        "Vinzons Hall",
+        "AECH Lobby",
+        "AECH"
+    ];
+
+    jeepStopList.sort((a, b) => {
+        const aName = a[0].location;
+        const bName = b[0].location;
+
+        const aIndex = priorityOrder.indexOf(aName);
+        const bIndex = priorityOrder.indexOf(bName);
+
+        if (aIndex !== -1 && bIndex !== -1) {
+            return aIndex - bIndex;
+        } else if (aIndex !== -1) {
+            return -1;
+        } else if (bIndex !== -1) {
+            return 1;
+        } else {
+            return aName.toLowerCase().localeCompare(bName.toLowerCase());
+        }
+    });
+}
