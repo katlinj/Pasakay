@@ -21,15 +21,16 @@
             // Get the most recent AECH Lobby data
             aechLobbyData = getLocationData(snapshot);
 
-            // Sort the data by timestamp
-            const latestAECHLobbyCount = aechLobbyData[0].personCount; // latest AECH Lobby count
-            const latestAECHLobbyTimestamp = getTimeSlotFromString(aechLobbyData[0].timestamp); // latest AECH Lobby data timestamp
-            const latestAECHLobbyCountInterval = getQuarterHourLabelFromTimeSlot(latestAECHLobbyTimestamp); // 09:01 -> 09:15
+            // // Sort the data by timestamp
+            // const latestAECHLobbyCount = aechLobbyData[0].personCount; // latest AECH Lobby count
+            // const latestAECHLobbyTimestamp = getTimeSlotFromString(aechLobbyData[0].timestamp); // latest AECH Lobby data timestamp
+            // const latestAECHLobbyCountInterval = getQuarterHourLabelFromTimeSlot(latestAECHLobbyTimestamp); // 09:01 -> 09:15
 
-            if (aechLobbyQuarterlyLabels[latestAECHLobbyCountInterval]) aechLobbyQuarterlyLabels[latestAECHLobbyCountInterval].push(latestAECHLobbyCount); // push to the interval
-            console.log('AECH Lobby intervals:', aechLobbyQuarterlyLabels);
+            // if (aechLobbyQuarterlyLabels[latestAECHLobbyCountInterval]) aechLobbyQuarterlyLabels[latestAECHLobbyCountInterval].push(latestAECHLobbyCount); // push to the interval
+            // console.log('AECH Lobby intervals:', aechLobbyQuarterlyLabels);
 
-            aechLobbyQuarterlyAvg = computeQuarterlyAverages(aechLobbyQuarterlyLabels); // compute averages of each interval
+            aechLobbyQuarterlyAvg = computeQuarterlyAverages(aechLobbyData, aechLobbyQuarterlyLabels); // compute averages of each interval
+            console.log('AECH Lobby quarterly intervals:', aechLobbyQuarterlyLabels);
             console.log('AECH Lobby quarterly average:', aechLobbyQuarterlyAvg);
 
             // Fetch current weather data whenever data is updated
