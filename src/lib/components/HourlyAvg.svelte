@@ -9,7 +9,7 @@
     let formattedDate = $derived(date.toLocaleString([], {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit'}));
 
     let current = $state(new Date());
-    let updated = $derived((current.getTime() - date.getTime()) <= (60 * 60 * 1000)); //within last hour
+    let updated = $derived((current.getTime() - date.getTime()) <= (60 * 60 * 1000 * 24 * 7)); //within last hour
 
 </script>
 
