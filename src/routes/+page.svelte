@@ -5,34 +5,32 @@
     import { collection, onSnapshot } from 'firebase/firestore';
     import { params, url, fetchWeatherData } from '$lib/weather.js';
     import { getWeatherType } from '$lib/weathertype';
-    import { getLocationData, computeQuarterlyAverages, sortJeepStopList } from '$lib/helpers';
+    import { getTimeSlotFromString, getLocationData, computeQuarterlyAverages, generateQuarterHourLabels, getQuarterHourLabelFromTimeSlot } from '$lib/helpers';
     import { stopAddress } from '$lib/stopaddress';
+    import { aechConference, vinzonsHall, aech, area2, krusNaLigas } from '$lib/prevStopsData';
 
     let currentWeather = null;
-    const locationsSet = new Set();
-    const jeepStopList = [];
+    const quarterHourLabels = generateQuarterHourLabels();
+
+    let aechLobbyData = [];
+    let aechLobbyQuarterlyLabels = quarterHourLabels.labels;
+    let aechLobbyQuarterlyAvg = [];
 
     onMount(() => {
-        const unsubscribe = onSnapshot(collection(db, 'jeepStops'), (snapshot) => {
-            // Collect unique locations
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                const location = data.location;
+        const unsubscribe = onSnapshot(collection(db, 'aechLobby'), (snapshot) => {
+            // Get the most recent AECH Lobby data
+            aechLobbyData = getLocationData(snapshot);
 
-                if (location && location !== 'basi_house') {
-                    locationsSet.add(location);
-                }
-            });
-            
-            jeepStopList.length = 0;
-            locationsSet.forEach((location) => {
-                const locationData = getLocationData(snapshot, location);
-                const locationAvg = computeQuarterlyAverages(locationData);
-                if (locationData.length > 0) jeepStopList.push([locationData[0], locationAvg]);
-            });
-            sortJeepStopList(jeepStopList);
+            // Sort the data by timestamp
+            const latestAECHLobbyCount = aechLobbyData[0].personCount; // latest AECH Lobby count
+            const latestAECHLobbyTimestamp = getTimeSlotFromString(aechLobbyData[0].timestamp); // latest AECH Lobby data timestamp
+            const latestAECHLobbyCountInterval = getQuarterHourLabelFromTimeSlot(latestAECHLobbyTimestamp); // 09:01 -> 09:15
 
-            console.log('jeepStopList: ', jeepStopList);
+            if (aechLobbyQuarterlyLabels[latestAECHLobbyCountInterval]) aechLobbyQuarterlyLabels[latestAECHLobbyCountInterval].push(latestAECHLobbyCount); // push to the interval
+            console.log('AECH Lobby intervals:', aechLobbyQuarterlyLabels);
+
+            aechLobbyQuarterlyAvg = computeQuarterlyAverages(aechLobbyQuarterlyLabels); // compute averages of each interval
+            console.log('AECH Lobby quarterly average:', aechLobbyQuarterlyAvg);
 
             // Fetch current weather data whenever data is updated
             fetchWeatherData(params, url).then((data) => {
@@ -48,17 +46,73 @@
 
 <div class="jeepStopList">
 
-    {#each jeepStopList as [locationData, locationAvg]}
+    <!-- AECH Lobby -->
+    {#if aechLobbyData.length > 0}
         <JeepStop
-            name = {locationData.location}
-            address = {stopAddress[locationData.location]}
-            count = {locationData.personCount}
+            name = {aechLobbyData[0].location}
+            address = {stopAddress[aechLobbyData[0].location]}
+            count = {aechLobbyData[0].personCount}
             weather = {currentWeather}
-            avg = {locationAvg.quarterlyAvg}
-            labels = {locationAvg.columnLabels}
-            lastUpdate = {locationData.timestamp}
+            avg = {aechLobbyQuarterlyAvg}
+            labels = {quarterHourLabels.columnLabels}
+            lastUpdate = {aechLobbyData[0].timestamp}
         />
-    {/each}
+    {/if}
+
+    <!-- Vinzons Hall -->
+    <JeepStop
+        name = {vinzonsHall.data.location}
+        address = {stopAddress[vinzonsHall.data.location]}
+        count = {vinzonsHall.data.personCount}
+        weather = {currentWeather}
+        avg = {vinzonsHall.avg}
+        labels = {quarterHourLabels.columnLabels}
+        lastUpdate = {vinzonsHall.data.timestamp}
+    />
+
+    <!-- AECH Conference -->
+    <JeepStop
+        name = {aechConference.data.location}
+        address = {stopAddress[aechConference.data.location]}
+        count = {aechConference.data.personCount}
+        weather = {currentWeather}
+        avg = {aechConference.avg}
+        labels = {quarterHourLabels.columnLabels}
+        lastUpdate = {aechConference.data.timestamp}
+    />
+
+    <!-- Krus Na Ligas -->
+    <JeepStop
+        name = {krusNaLigas.data.location}
+        address = {stopAddress[krusNaLigas.data.location]}
+        count = {krusNaLigas.data.personCount}
+        weather = {currentWeather}
+        avg = {krusNaLigas.avg}
+        labels = {quarterHourLabels.columnLabels}
+        lastUpdate = {krusNaLigas.data.timestamp}
+    />
+
+    <!-- AECH -->
+    <JeepStop
+        name = {aech.data.location}
+        address = {stopAddress[aech.data.location]}
+        count = {aech.data.personCount}
+        weather = {currentWeather}
+        avg = {aech.avg}
+        labels = {quarterHourLabels.columnLabels}
+        lastUpdate = {aech.data.timestamp}
+    />
+
+    <!-- Area 2 -->
+    <JeepStop
+        name = {area2.data.location}
+        address = {stopAddress[area2.data.location]}
+        count = {area2.data.personCount}
+        weather = {currentWeather}
+        avg = {area2.avg}
+        labels = {quarterHourLabels.columnLabels}
+        lastUpdate = {area2.data.timestamp}
+    />
 
 </div>
 
